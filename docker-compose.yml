@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  boardquest-db:
+    image: postgres:13
+    ports:
+    - 5434:5432
+    environment:
+      POSTGRES_USER: masterio
+      POSTGRES_PASSWORD: masterio12
+      POSTGRES_DB: nest
+    networks:
+      - boardquest_nest
+
+networks:
+  boardquest_nest:

@@ -1,0 +1,190 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+//  model MASTER
+model m_user{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt()
+
+  email String @unique
+  pasword String
+
+  firstName String?
+  lastName String?
+  
+  m_adventure m_adventure[]
+  m_client m_client[]
+
+
+@@map("users")
+}
+
+model m_adventure{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt()
+
+  m_user_id Int
+  user m_user @relation(fields: [m_user_id],references: [id])
+
+  r_adventure_bank_id Int
+//  adventure_bank r_adventure_bank @relation(fields: [r_adventure_bank_id],references: [id])
+
+  m_rank_adventure_id Int
+  //m_rank_adventure m_rank_adventure @relation(fields: [m_rank_adventure_id],references: [id])
+
+  r_has_skill_id Int
+  //r_has_skill r_has_skill @relation(fields: [r_has_skill_id],references: [id])
+
+  
+}
+
+model m_client{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updateAt DateTime @updatedAt()
+
+  m_user_id Int
+  user m_user @relation(fields: [m_user_id],references: [id])
+
+  m_clan_id Int
+//m_clan m_clan @relation(fields: [m_clan_id],references: [id])
+
+
+  r_client_bank_id Int
+//r_client_bank r_client_bank @relation(fields: [r_client_bank_id],references: [id])
+
+
+}
+
+model m_clan{
+  id Int @id @default(autoincrement())
+  clan_name String?
+}
+
+model m_rank_adventure{
+  id Int @id @default(autoincrement())
+  grade_name String?
+}
+model m_grade_client{
+  id Int @id @default(autoincrement())
+  grade_name String?
+}
+model m_skill{
+  id Int @id @default(autoincrement())
+  skill_name String?
+}
+model m_boards{
+  id Int @id @default(autoincrement())
+  t_quest_id Int
+  category_quest String
+  desc String?
+}
+
+// Model TRANSACTION
+
+model t_quest{
+  id Int @id @default(autoincrement())
+  main_desc String?
+  sec_desc String?
+  m_client_id Int
+  r_post_skill_id Int
+  reward String?
+}
+model t_contract{
+  id Int @id @default(autoincrement())
+  t_proposal_id Int
+  r_adventure_proposal_and_contract_id Int
+  r_client_proposal_and_contract_id Int
+  start_time DateTime
+  end_time DateTime
+  t_payment_id Int
+  min_reward String?
+  max_reward String?
+} 
+model t_proposal{
+  id Int @id @default(autoincrement())
+  t_quest_id Int
+  m_adventure_id Int
+  proposal_time DateTime
+  t_payment_id Int
+  m_grade_client String
+  client_comment String?
+  m_rank_adventure Int
+  adventure_comment String?
+  r_proposal_status_id Int
+  reward_request String?
+}
+model t_message{
+  id Int @id @default(autoincrement())
+  m_client_id Int
+  m_adventure_id Int
+  message_time DateTime
+  message_text String?
+  t_proposal_id Int
+  r_proposal_status_id Int
+
+}
+model t_attachment{
+  id Int @id @default(autoincrement())
+  t_proposal_id Int
+  t_message_id Int
+  attachment_link String?
+
+}
+
+//  related
+
+model r_client_bank{
+  id Int @id @default(autoincrement())
+  priority String?
+  m_bank_id Int
+  atm String?
+
+}
+model r_post_skill{
+  id Int @id @default(autoincrement())
+  m_post_id Int
+  m_skill_id Int
+
+}
+model r_adventure_bank{
+   id Int @id @default(autoincrement())
+  priority String?
+  m_bank_id Int
+  atm String?
+
+
+}
+model r_has_skill{
+  id Int @id @default(autoincrement())
+  m_adventure_id Int
+  m_skill_id Int
+}
+model r_adventure_proposal_and_contract{
+  id Int @id @default(autoincrement())
+  m_adventure_id Int
+  registration_date DateTime
+  overview String
+}
+model r_client_proposal_and_contract{
+  id Int @id @default(autoincrement())
+  m_clan_id Int
+  registration_date DateTime
+
+}
+model r_proposal_status{
+  id Int @id @default(autoincrement())
+  status String
+}
